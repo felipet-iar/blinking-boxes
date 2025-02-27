@@ -6,7 +6,7 @@ on:
 jobs:
   build:
     name: Build with IAR
-      #    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
       run: |
         echo "IAR ANSI C/C++ Compiler V9.70.1 for ARM"
@@ -15,7 +15,7 @@ jobs:
 
   verify:
     name: Verify with IAR
-      #    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
       run: |
         echo "IAR C-STAT Command Line Interface V2.7.5.559"
@@ -23,7 +23,7 @@ jobs:
 
   deploy:
     name: Deploy with IAR
-      #    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
       run: |
         echo "IAR C-SPY Command Line Utility V9.3.7.1266"
