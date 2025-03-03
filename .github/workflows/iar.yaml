@@ -11,20 +11,20 @@ jobs:
       matrix:
         project: [Zephyr, PX5]
     runs-on: ubuntu-latest
+    container: ghcr.io/${{ github.repository_owner }}/cxarm:9.60.4
     steps:
     - uses: actions/checkout@v4
     - run: |
-        echo "IAR ANSI C/C++ Compiler V9.70.1 for Arm"
-        sleep $((15 + RANDOM % 36))
+        iarbuild project.ewp -build Debug -parallel 2
 
   build-rl78:
     name: Build for RL78
     runs-on: ubuntu-latest
+    container: ghcr.io/${{ github.repository_owner }}/cxrl78:5.30.1
     steps:
     - uses: actions/checkout@v4
     - run: |
-        echo "IAR ANSI C/C++ Compiler V9.70.1 for Renesas RL78"
-        sleep $((5 + RANDOM % 46))
+         iarbuild project.ewp -build Debug -parallel 2
   
   verify:
     needs: build
@@ -33,21 +33,21 @@ jobs:
       matrix:
         project: [Zephyr, PX5]
     runs-on: ubuntu-latest
+    container: ghcr.io/${{ github.repository_owner }}/cxarm:9.60.4
     steps:
     - uses: actions/checkout@v4
     - run: |
-        echo "IAR C-STAT Command Line Interface V2.7.5.559"
-        sleep $((65 + RANDOM % 26))
+         iarbuild project.ewp -cstat_analyze Debug -parallel 2
 
   verify-rl78:
     needs: build-rl78
     name: Verify RL78
     runs-on: ubuntu-latest
+    container: ghcr.io/${{ github.repository_owner }}/cxrl78:5.30.1
     steps:
     - uses: actions/checkout@v4
     - run: |
-        echo "IAR C-STAT Command Line Interface V2.7.5.559"
-        sleep $((15 + RANDOM % 26))        
+        iarbuild project.ewp -cstat_analyze Debug -parallel 2     
 
   deploy:
     needs: verify
@@ -56,18 +56,18 @@ jobs:
       matrix:
         project: [Zephyr, PX5]
     runs-on: ubuntu-latest
+    container: ghcr.io/${{ github.repository_owner }}/cxarm:9.60.4
     steps:
     - uses: actions/checkout@v4
     - run: |
-        echo "IAR C-SPY Command Line Utility V9.3.7.1266"
-        sleep $((15 + RANDOM % 26))
+        iarbuild project.ewp -deploy Release
 
   deploy-rl78:
     needs: verify-rl78
     name: Deploy RL78
     runs-on: ubuntu-latest
+    container: ghcr.io/${{ github.repository_owner }}/cxrl78:5.30.1
     steps:
     - uses: actions/checkout@v4
     - run: |
-        echo "IAR C-SPY Command Line Utility V9.3.7.1266"
-        sleep $((15 + RANDOM % 26))        
+        iarbuild project.ewp -deploy Release
