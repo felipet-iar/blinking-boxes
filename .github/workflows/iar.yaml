@@ -1,4 +1,4 @@
-name: Build with IAR
+name: IAR Workflow
 
 on:
   push:
@@ -9,10 +9,11 @@ jobs:
     name: Build with IAR
     strategy:
       matrix:
-        project: [zephyr, PX5]
-        arch: [Arm, RL78]
+        project: [Zephyr, PX5]
+        arch: [Arm, RISC-V, RL78]
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v4
     - run: |
         echo "IAR ANSI C/C++ Compiler V9.70.1 for ${{ matrix.arch }}"
         sleep $((45 + RANDOM % 46))
@@ -22,10 +23,11 @@ jobs:
     name: Verify with IAR
     strategy:
       matrix:
-        project: [zephyr, PX5]
-        arch: [Arm, RL78]
+        project: [Zephyr, PX5]
+        arch: [Arm, RISC-V, RL78]
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v4
     - run: |
         echo "IAR C-STAT Command Line Interface V2.7.5.559"
         sleep $((65 + RANDOM % 26))
@@ -35,10 +37,11 @@ jobs:
     name: Deploy with IAR
     strategy:
       matrix:
-        project: [zephyr, PX5]
-        arch: [Arm, RL78]
+        project: [Zephyr, PX5]
+        arch: [Arm, RISC-V, RL78]
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v4
     - run: |
         echo "IAR C-SPY Command Line Utility V9.3.7.1266"
         sleep $((15 + RANDOM % 26))
