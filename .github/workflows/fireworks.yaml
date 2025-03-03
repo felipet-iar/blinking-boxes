@@ -1,6 +1,7 @@
 name: Build with IAR
 
 on:
+  push:
   workflow_dispatch:
 
 jobs:
@@ -14,6 +15,7 @@ jobs:
 
 
   verify:
+    needs: build
     name: Verify with IAR
     runs-on: ubuntu-latest
     steps:
@@ -22,6 +24,7 @@ jobs:
         sleep 10
 
   deploy:
+    needs: verify
     name: Deploy with IAR
     runs-on: ubuntu-latest
     steps:
