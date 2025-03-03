@@ -15,7 +15,7 @@ jobs:
     steps:
     - run: |
         echo "IAR ANSI C/C++ Compiler V9.70.1 for ${{ matrix.arch }}"
-        sleep 5
+        sleep $((45 + RANDOM % 46))
 
   verify:
     needs: build
@@ -28,7 +28,7 @@ jobs:
     steps:
     - run: |
         echo "IAR C-STAT Command Line Interface V2.7.5.559"
-        sleep 10
+        sleep $((45 + RANDOM % 46))
 
   deploy:
     needs: verify
@@ -41,4 +41,4 @@ jobs:
     steps:
     - run: |
         echo "IAR C-SPY Command Line Utility V9.3.7.1266"
-        sleep 5
+        sleep $((45 + RANDOM % 46))
