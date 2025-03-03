@@ -6,7 +6,19 @@ on:
 
 jobs:
   build:
-    name: Build with IAR
+    name: Build for Arm
+    strategy:
+      matrix:
+        project: [Zephyr, PX5]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - run: |
+        echo "IAR ANSI C/C++ Compiler V9.70.1 for Arm"
+        sleep $((45 + RANDOM % 46))
+
+  build-rl78:
+    name: Build for RL78
     strategy:
       matrix:
         project: [Zephyr, PX5]
@@ -15,12 +27,12 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - run: |
-        echo "IAR ANSI C/C++ Compiler V9.70.1 for ${{ matrix.arch }}"
-        sleep $((45 + RANDOM % 46))
-
+        echo "IAR ANSI C/C++ Compiler V9.70.1 for Renesas RL78"
+        sleep $((5 + RANDOM % 46))
+  
   verify:
     needs: build
-    name: Verify with IAR
+    name: Verify Arm
     strategy:
       matrix:
         project: [Zephyr, PX5]
@@ -31,6 +43,19 @@ jobs:
     - run: |
         echo "IAR C-STAT Command Line Interface V2.7.5.559"
         sleep $((65 + RANDOM % 26))
+
+  verify-rl78:
+    needs: build-rl78
+    name: Verify RL78
+    strategy:
+      matrix:
+        project: [Zephyr, PX5]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - run: |
+        echo "IAR C-STAT Command Line Interface V2.7.5.559"
+        sleep $((15 + RANDOM % 26))        
 
   deploy:
     needs: verify
@@ -45,3 +70,16 @@ jobs:
     - run: |
         echo "IAR C-SPY Command Line Utility V9.3.7.1266"
         sleep $((15 + RANDOM % 26))
+
+    deploy-rl78:
+      needs: verify-rl78
+      name: Deploy with IAR
+      strategy:
+        matrix:
+          project: [Zephyr, PX5]
+      runs-on: ubuntu-latest
+      steps:
+      - uses: actions/checkout@v4
+      - run: |
+          echo "IAR C-SPY Command Line Utility V9.3.7.1266"
+          sleep $((15 + RANDOM % 26))        
