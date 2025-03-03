@@ -71,15 +71,15 @@ jobs:
         echo "IAR C-SPY Command Line Utility V9.3.7.1266"
         sleep $((15 + RANDOM % 26))
 
-    deploy-rl78:
-      needs: verify-rl78
-      name: Deploy with IAR
-      strategy:
-        matrix:
-          project: [Zephyr, PX5]
-      runs-on: ubuntu-latest
-      steps:
-      - uses: actions/checkout@v4
-      - run: |
-          echo "IAR C-SPY Command Line Utility V9.3.7.1266"
-          sleep $((15 + RANDOM % 26))        
+  deploy-rl78:
+    needs: verify-rl78
+    name: Deploy with IAR
+    strategy:
+      matrix:
+        project: [Zephyr, PX5]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - run: |
+        echo "IAR C-SPY Command Line Utility V9.3.7.1266"
+        sleep $((15 + RANDOM % 26))        
