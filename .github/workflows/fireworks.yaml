@@ -7,16 +7,23 @@ on:
 jobs:
   build:
     name: Build with IAR
+    strategy:
+      matrix:
+        project: [zephyr, PX5]
+        arch: [Arm, RL78]
     runs-on: ubuntu-latest
     steps:
     - run: |
-        echo "IAR ANSI C/C++ Compiler V9.70.1 for ARM"
-        sleep 10
-
+        echo "IAR ANSI C/C++ Compiler V9.70.1 for ${{ matrix.arch }}"
+        sleep 5
 
   verify:
     needs: build
     name: Verify with IAR
+    strategy:
+      matrix:
+        project: [zephyr, PX5]
+        arch: [Arm, RL78]
     runs-on: ubuntu-latest
     steps:
     - run: |
@@ -26,8 +33,12 @@ jobs:
   deploy:
     needs: verify
     name: Deploy with IAR
+    strategy:
+      matrix:
+        project: [zephyr, PX5]
+        arch: [Arm, RL78]
     runs-on: ubuntu-latest
     steps:
     - run: |
         echo "IAR C-SPY Command Line Utility V9.3.7.1266"
-        sleep 10
+        sleep 5
