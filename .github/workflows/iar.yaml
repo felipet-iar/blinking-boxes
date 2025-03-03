@@ -55,7 +55,6 @@ jobs:
     strategy:
       matrix:
         project: [Zephyr, PX5]
-        arch: [Arm, RISC-V]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
