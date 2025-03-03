@@ -28,7 +28,7 @@ jobs:
     steps:
     - run: |
         echo "IAR C-STAT Command Line Interface V2.7.5.559"
-        sleep $((45 + RANDOM % 46))
+        sleep $((65 + RANDOM % 26))
 
   deploy:
     needs: verify
@@ -41,4 +41,4 @@ jobs:
     steps:
     - run: |
         echo "IAR C-SPY Command Line Utility V9.3.7.1266"
-        sleep $((45 + RANDOM % 46))
+        sleep $((15 + RANDOM % 26))
