@@ -19,10 +19,6 @@ jobs:
 
   build-rl78:
     name: Build for RL78
-    strategy:
-      matrix:
-        project: [Zephyr, PX5]
-        arch: [Arm, RISC-V, RL78]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -36,7 +32,6 @@ jobs:
     strategy:
       matrix:
         project: [Zephyr, PX5]
-        arch: [Arm, RISC-V, RL78]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -47,9 +42,6 @@ jobs:
   verify-rl78:
     needs: build-rl78
     name: Verify RL78
-    strategy:
-      matrix:
-        project: [Zephyr, PX5]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -59,11 +51,11 @@ jobs:
 
   deploy:
     needs: verify
-    name: Deploy with IAR
+    name: Deploy Arm
     strategy:
       matrix:
         project: [Zephyr, PX5]
-        arch: [Arm, RISC-V, RL78]
+        arch: [Arm, RISC-V]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -74,9 +66,6 @@ jobs:
   deploy-rl78:
     needs: verify-rl78
     name: Deploy with IAR
-    strategy:
-      matrix:
-        project: [Zephyr, PX5]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
