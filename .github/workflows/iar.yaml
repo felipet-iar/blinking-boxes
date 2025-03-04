@@ -23,6 +23,9 @@ jobs:
     container: ghcr.io/${{ github.repository_owner }}/cxrl78:5.30.1
     steps:
     - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
+      with:
+        repository: arm-software/CMSIS-DSP
     - run: |
          iarbuild project.ewp -build Debug -parallel 2
   
