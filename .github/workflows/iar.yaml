@@ -5,75 +5,116 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    name: Build for Arm
-    strategy:
-      matrix:
-        project: [Zephyr, PX5]
-    runs-on: ubuntu-latest
-    container: ghcr.io/${{ github.repository_owner }}/cxarm:9.60.4
-    steps:
-    - uses: actions/checkout@v4
-    - uses: actions/checkout@v4
-      with:
-        repository: arm-software/CMSIS-DSP
-    - run: |
-        iarbuild project.ewp -build Debug -parallel 4
-
   build-rl78:
-    name: Build for RL78
+    name: Build for bare-metal RL78
     runs-on: ubuntu-latest
     container: ghcr.io/${{ github.repository_owner }}/cxrl78:5.30.1
     steps:
     - uses: actions/checkout@v4
     - run: |
-         iarbuild project.ewp -build Debug -parallel 4
-  
-  verify:
-    needs: build
-    name: Verify Arm
-    strategy:
-      matrix:
-        project: [Zephyr, PX5]
-    runs-on: ubuntu-latest
-    container: ghcr.io/${{ github.repository_owner }}/cxarm:9.60.4
-    steps:
-    - uses: actions/checkout@v4
-    - uses: actions/checkout@v4
-      with:
-        repository: arm-software/CMSIS-DSP
-    - run: |
-         iarbuild project.ewp -cstat_analyze Debug -parallel 4
+         iarbuild project-rl78.ewp -build Debug -parallel 4
 
   verify-rl78:
     needs: build-rl78
-    name: Verify RL78
+    name: Verify MISRA C/C++ RL78
     runs-on: ubuntu-latest
     container: ghcr.io/${{ github.repository_owner }}/cxrl78:5.30.1
     steps:
     - uses: actions/checkout@v4
     - run: |
-        iarbuild project.ewp -cstat_analyze Debug -parallel 4
+        iarbuild project-rl78.ewp -cstat_analyze Debug -parallel 4
 
-  deploy:
-    needs: verify
-    name: Deploy Arm
-    strategy:
-      matrix:
-        project: [Zephyr, PX5]
+  deploy-rl78:
+    needs: verify-rl78
+    name: Deploy RL78 IIoT sensor node
+    runs-on: ubuntu-latest
+    container: ghcr.io/${{ github.repository_owner }}/cxrl78:5.30.1
+    steps:
+    - uses: actions/checkout@v4
+    - run: |
+        iarbuild project-rl78.ewp -deploy Relaese
+
+
+
+  build-nxp:
+    name: Build for Arm Zephyr RTOS&NXP MCXN947
     runs-on: ubuntu-latest
     container: ghcr.io/${{ github.repository_owner }}/cxarm:9.60.4
     steps:
     - uses: actions/checkout@v4
     - run: |
-        iarbuild project.ewp -deploy Release
+        iarbuild project=nxp.ewp -build Debug -paralel 4
 
-  deploy-rl78:
-    needs: verify-rl78
-    name: Deploy RL78
+          
+  verify-nxp:
+    needs: build-nxp
+    name: Verify MISRA C/C++ Arm Zephyr RTOS
     runs-on: ubuntu-latest
-    container: ghcr.io/${{ github.repository_owner }}/cxrl78:5.30.1
+    container: ghcr.io/${{ github.repository_owner }}/cxarm:9.60.4
     steps:
     - uses: actions/checkout@v4
     - run: |
-        iarbuild project.ewp -deploy Release
+         iarbuild project-nxp.ewp -cstat_analyze Debug -parallel 4
+
+
+  secure-nxp:
+    needs: verify-nxp
+    name: Secure for production Arm Zephyr RTOS
+    runs-on: ubuntu-latest
+    container: ghcr.io/${{ github.repository_owner }}/cxarm:9.60.4
+    steps:
+    - uses: actions/checkout@v4
+    - run: |
+         iarbuild project-nxp.ewp -secure Release -parallel 4
+
+  deploy-nxp:
+    needs: secure-nxp
+    name: Deploy Arm Zephyr RTOS&NXP IIoT sensor node
+    runs-on: ubuntu-latest
+    container: ghcr.io/${{ github.repository_owner }}/cxarm:9.60.4
+    steps:
+    - uses: actions/checkout@v4
+    - run: |
+        iarbuild project-nxp.ewp -deploy Release
+
+
+  build-stm32:
+    name: Build for Arm (FuSa) PX5 RTOS&ST STM32L4
+    runs-on: ubuntu-latest
+    container: ghcr.io/${{ github.repository_owner }}/cxarm:9.60.4
+    steps:
+    - uses: actions/checkout@v4
+    - run: |
+        iarbuild project=nxp.ewp -build Debug -paralel 4
+
+          
+  verify-stm32:
+    needs: build-stm32
+    name: Verify MISRA C/C++ Arm PX5 RTOS
+    runs-on: ubuntu-latest
+    container: ghcr.io/${{ github.repository_owner }}/cxarm:9.60.4
+    steps:
+    - uses: actions/checkout@v4
+    - run: |
+         iarbuild project-stm32.ewp -cstat_analyze Debug -parallel 4
+
+
+  secure-stm32:
+    needs: verify-stm32
+    name: Secure for production Arm PX5 RTOS
+    runs-on: ubuntu-latest
+    container: ghcr.io/${{ github.repository_owner }}/cxarm:9.60.4
+    steps:
+    - uses: actions/checkout@v4
+    - run: |
+         iarbuild project-stmp32.ewp -secure Release -parallel 4
+
+  deploy-stm32:
+    needs: secure-stm32
+    name: Deploy Arm PX5 RTOS&STM32 IIoT sensor node
+    runs-on: ubuntu-latest
+    container: ghcr.io/${{ github.repository_owner }}/cxarm:9.60.4
+    steps:
+    - uses: actions/checkout@v4
+    - run: |
+        iarbuild project-nxp.ewp -deploy Release
