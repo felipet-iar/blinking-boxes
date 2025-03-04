@@ -14,8 +14,11 @@ jobs:
     container: ghcr.io/${{ github.repository_owner }}/cxarm:9.60.4
     steps:
     - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
+      with:
+        repository: arm-software/CMSIS-DSP
     - run: |
-        iarbuild project.ewp -build Debug -parallel 2
+        iarbuild project.ewp -build Debug -parallel 4
 
   build-rl78:
     name: Build for RL78
@@ -23,11 +26,8 @@ jobs:
     container: ghcr.io/${{ github.repository_owner }}/cxrl78:5.30.1
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/checkout@v4
-      with:
-        repository: arm-software/CMSIS-DSP
     - run: |
-         iarbuild project.ewp -build Debug -parallel 2
+         iarbuild project.ewp -build Debug -parallel 4
   
   verify:
     needs: build
@@ -39,8 +39,11 @@ jobs:
     container: ghcr.io/${{ github.repository_owner }}/cxarm:9.60.4
     steps:
     - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
+      with:
+        repository: arm-software/CMSIS-DSP
     - run: |
-         iarbuild project.ewp -cstat_analyze Debug -parallel 2
+         iarbuild project.ewp -cstat_analyze Debug -parallel 4
 
   verify-rl78:
     needs: build-rl78
@@ -50,7 +53,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - run: |
-        iarbuild project.ewp -cstat_analyze Debug -parallel 2     
+        iarbuild project.ewp -cstat_analyze Debug -parallel 4
 
   deploy:
     needs: verify
